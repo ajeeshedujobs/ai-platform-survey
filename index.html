@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Edujobs Academy – AI &amp; Digital Platform Usage Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2a4a; --blue: #1f5fae; --teal: #17a29a; --line: #1d7f9a;
+    --grad: linear-gradient(90deg, #1f5fae 0%, #1a83a6 55%, #17a29a 100%);
+    --ink: #111827; --muted: #4b5563; --field: #2a6f9e;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Roboto Condensed', Arial, sans-serif; color: var(--ink);
+    background: radial-gradient(circle at 85% 80%, #e2f6f3 0%, transparent 40%), linear-gradient(180deg, #f6f9fc, #eef6f8);
+    min-height: 100vh; padding: 16px 16px 40px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .card { background: #fff; border-radius: 10px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(15,42,74,.08); }
+  .intro { margin-top: 6px; padding: 16px 18px 14px; position: relative; }
+  .intro:before { content: ''; position: absolute; left: 0; right: 0; top: -6px; height: 6px; background: var(--grad); border-radius: 10px 10px 0 0; }
+  .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; }
+  .logo img { height: 46px; width: auto; display: block; }
+  h1 { font-size: 24px; margin: 0; font-weight: 700; color: #000; line-height: 1.15; }
+  .intro p { margin: 4px 0; font-size: 14.5px; line-height: 1.35; }
+  .intro ul { margin: 4px 0 8px; padding: 0; list-style: none; font-weight: 700; font-size: 14.5px; }
+  .intro ul li:before { content: '– '; }
+  .intro .b { font-weight: 700; }
+  .sec { border: 1.5px solid var(--line); overflow: hidden; }
+  .bar { background: var(--grad); color: #fff; font-size: 17px; font-weight: 500; padding: 8px 14px;
+    display: flex; justify-content: space-between; align-items: center; cursor: default; user-select: none; }
+  .sec.collapsible .bar { cursor: pointer; }
+  .bar small { font-size: 13px; opacity: .9; font-weight: 400; }
+  .body { padding: 12px 14px 16px; }
+  .sec.closed .body { display: none; }
+  .sec.closed { border-color: transparent; }
+  .q { margin-top: 12px; }
+  .body > .q:first-child, .body > .two:first-child > .q { margin-top: 2px; }
+  .q label.t { display: block; font-weight: 700; font-size: 15.5px; margin-bottom: 6px; }
+  .req { color: #d93025; }
+  input[type=text], input[type=email], input[type=number], input[type=date], select, textarea {
+    width: 100%; font: inherit; font-size: 15px; padding: 7px 10px; border: 1.8px solid var(--field);
+    border-radius: 8px; background: #fff; color: var(--ink); outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(23,162,154,.15); }
+  textarea { min-height: 64px; resize: vertical; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .date { position: relative; }
+  .date span { position: absolute; left: 11px; top: -8px; background: #fff; padding: 0 4px; font-size: 12px; color: var(--muted); }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .opts label { display: inline-flex; align-items: center; gap: 7px; font-size: 15.5px; cursor: pointer; }
+  .opts input { appearance: none; -webkit-appearance: none; width: 18px; height: 18px; margin: 0;
+    border: 1.8px solid var(--field); border-radius: 4px; background: #fff; cursor: pointer; display: grid; place-items: center; }
+  .opts input:checked { background: var(--grad); border-color: var(--teal); }
+  .opts input:checked:after { content: ''; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px,-1px); }
+  .scale { display: grid; grid-template-columns: repeat(5, 1fr); text-align: center; gap: 4px; }
+  .scale label { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 14.5px; cursor: pointer; }
+  .scale input { width: 18px; height: 18px; accent-color: var(--teal); margin: 0; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .err { display: none; color: #d93025; font-size: 13px; margin-top: 4px; }
+  .q.bad .err { display: block; }
+  .q.bad input[type=text], .q.bad input[type=email], .q.bad select { border-color: #d93025; }
+  .hide { display: none !important; }
+  .actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+  button.submit { background: var(--grad); color: #fff; border: 0; border-radius: 8px; padding: 11px 34px;
+    font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 10px rgba(31,95,174,.25); }
+  button.submit:disabled { opacity: .6; cursor: wait; }
+  .note { font-size: 13px; color: var(--muted); }
+  .done { text-align: center; padding: 34px 20px; }
+  .done h2 { margin: 6px 0; font-size: 24px; }
+  .tick { width: 56px; height: 56px; border-radius: 50%; background: var(--grad); display: inline-grid; place-items: center; }
+  .tick:after { content: ''; width: 14px; height: 26px; border: solid #fff; border-width: 0 4px 4px 0; transform: rotate(45deg) translate(-2px,-3px); }
+  @media (max-width: 560px) {
+    .two { grid-template-columns: 1fr; }
+    h1 { font-size: 20px; }
+    .scale label { font-size: 12px; }
+    .opts { gap: 8px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="formView">
+    <div class="card intro">
+      <div class="brand">
+        <div class="logo">
+          <img src="https://jobsacademy.co.in/assets/frontend/jobs_academy/img/edijobs-logo.png" alt="JobsAcademy – Shaping Careers">
+        </div>
+        <h1>Edujobs Academy – AI &amp; Digital Platform Usage Survey</h1>
+      </div>
+      <p>Many of us already use AI tools and online platforms (paid, free trial, demo or free plan) in our daily work. Management wants to understand which platforms are really helping the team, so the company can consider purchasing the ones that are widely and effectively used.</p>
+      <ul>
+        <li>Which platforms you use, and whether it is paid, a trial, a demo or a free plan</li>
+        <li>When the subscription was purchased and when it expires</li>
+        <li>How useful it is for your work, and whether you want the company to help purchase it</li>
+      </ul>
+      <p class="b">If you have not used any AI tool yet (ChatGPT, Gemini, Claude, etc.), please fill the form too – that helps us plan training.<br>It takes about 5 minutes. Fill one block per platform (up to 3; list any more at the end).</p>
+    </div>
+
+    <form id="f" novalidate>
+      <div class="card sec">
+        <div class="bar">Your details</div>
+        <div class="body">
+          <div class="two">
+            <div class="q" data-req><label class="t">Full name <span class="req">*</span></label><input type="text" name="name" placeholder="Enter your full name"><div class="err">Please enter your name</div></div>
+            <div class="q"><label class="t">Employee ID</label><input type="text" name="empId" placeholder="Optional"></div>
+          </div>
+          <div class="two">
+            <div class="q" data-req data-email><label class="t">Official email <span class="req">*</span></label><input type="email" name="email" placeholder="name@jobsacademy.co.in"><div class="err">Please enter a valid email</div></div>
+            <div class="q" data-req><label class="t">Department <span class="req">*</span></label>
+              <select name="department"><option value="">Select department</option>
+                <option>Sales / Admissions</option><option>Counselling</option><option>Marketing / Digital</option><option>Operations</option>
+                <option>Academics / Training</option><option>Placements</option><option>HR</option><option>Finance &amp; Accounts</option>
+                <option>IT / Tech</option><option>Management</option><option>Other</option></select><div class="err">Please select your department</div></div>
+          </div>
+          <div class="two">
+            <div class="q" data-req><label class="t">Designation <span class="req">*</span></label><input type="text" name="designation" placeholder="e.g. Senior Counsellor"><div class="err">Please enter your designation</div></div>
+            <div class="q" data-req><label class="t">Branch / Location <span class="req">*</span></label><input type="text" name="branch" placeholder="e.g. Chennai"><div class="err">Please enter your branch</div></div>
+          </div>
+          <div class="q"><label class="t">Reporting manager</label><input type="text" name="manager" placeholder="Manager's name"></div>
+        </div>
+      </div>
+
+      <div class="card sec">
+        <div class="bar">AI tools – awareness</div>
+        <div class="body">
+          <div class="q" data-req-group="everUsed"><label class="t">Which AI tools have you ever used (even the free version)? <span class="req">*</span></label>
+            <div class="opts">
+              <label><input type="checkbox" name="everUsed" value="ChatGPT">ChatGPT</label>
+              <label><input type="checkbox" name="everUsed" value="Gemini">Gemini</label>
+              <label><input type="checkbox" name="everUsed" value="Claude">Claude</label>
+              <label><input type="checkbox" name="everUsed" value="Copilot">Copilot</label>
+              <label><input type="checkbox" name="everUsed" value="Perplexity">Perplexity</label>
+              <label><input type="checkbox" name="everUsed" value="Meta AI">Meta AI</label>
+              <label><input type="checkbox" name="everUsed" value="DeepSeek">DeepSeek</label>
+              <label><input type="checkbox" name="everUsed" value="None – not used any AI tool" id="neverUsed">None – I have not used any AI tool</label>
+            </div><div class="err">Please choose at least one option</div></div>
+          <div class="q" data-req-group="aiFreq"><label class="t">How often do you use AI tools for work? <span class="req">*</span></label>
+            <div class="opts">
+              <label><input type="radio" name="aiFreq" value="Daily">Daily</label>
+              <label><input type="radio" name="aiFreq" value="A few times a week">A few times a week</label>
+              <label><input type="radio" name="aiFreq" value="A few times a month">A few times a month</label>
+              <label><input type="radio" name="aiFreq" value="Rarely">Rarely</label>
+              <label><input type="radio" name="aiFreq" value="Never">Never</label>
+            </div><div class="err">Please choose one</div></div>
+        </div>
+      </div>
+
+      <div id="platforms"></div>
+
+      <div class="card sec hide" id="notUsing">
+        <div class="bar">Not yet using AI tools</div>
+        <div class="body">
+          <div class="q" data-req-group="notReasons"><label class="t">Why have you not started using AI tools for work? <span class="req">*</span></label>
+            <div class="opts">
+              <label><input type="checkbox" name="notReasons" value="Not aware of these tools">Not aware of these tools</label>
+              <label><input type="checkbox" name="notReasons" value="Do not know how to use them">Don't know how to use them</label>
+              <label><input type="checkbox" name="notReasons" value="Not sure it is allowed">Not sure it's allowed</label>
+              <label><input type="checkbox" name="notReasons" value="Not needed for my role">Not needed for my role</label>
+              <label><input type="checkbox" name="notReasons" value="Cost / paid version not available">Cost / no paid version</label>
+              <label><input type="checkbox" name="notReasons" value="Data privacy concerns">Data privacy concerns</label>
+              <label><input type="checkbox" name="notReasons" value="No time to learn">No time to learn</label>
+            </div><div class="err">Please choose at least one reason</div></div>
+          <div class="q" data-req-group="training"><label class="t">Would you like the company to give training on AI tools? <span class="req">*</span></label>
+            <div class="opts">
+              <label><input type="radio" name="training" value="Yes">Yes</label>
+              <label><input type="radio" name="training" value="Maybe">Maybe</label>
+              <label><input type="radio" name="training" value="No">No</label>
+            </div><div class="err">Please choose one</div></div>
+          <div class="q"><label class="t">Which tools would you like to learn?</label>
+            <div class="opts">
+              <label><input type="checkbox" name="learnTools" value="ChatGPT">ChatGPT</label>
+              <label><input type="checkbox" name="learnTools" value="Gemini">Gemini</label>
+              <label><input type="checkbox" name="learnTools" value="Claude">Claude</label>
+              <label><input type="checkbox" name="learnTools" value="Copilot">Copilot</label>
+              <label><input type="checkbox" name="learnTools" value="Canva AI">Canva AI</label>
+              <label><input type="checkbox" name="learnTools" value="Not sure – guide me">Not sure – guide me</label>
+            </div></div>
+        </div>
+      </div>
+
+      <div class="card sec">
+        <div class="bar">Overall recommendation</div>
+        <div class="body">
+          <div class="q"><label class="t">If the company can buy only ONE platform for the team, which should it be?</label><input type="text" name="topPick" list="platformList" placeholder="e.g. ChatGPT Plus"></div>
+          <div class="q"><label class="t">Why? How would it help your team / the business?</label><textarea name="why" placeholder="Optional"></textarea></div>
+          <div class="q"><label class="t">Any other platforms (if more than 3) or comments</label><textarea name="comments" placeholder="Name, paid / trial / free, expiry date – one per line"></textarea></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <span class="note"><span class="req">*</span> required &nbsp;·&nbsp; Responses go to HR / management only</span>
+        <button type="submit" class="submit" id="sb">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="doneView" class="card done hide">
+    <div class="tick"></div>
+    <h2>Thank you!</h2>
+    <p>Your response has been recorded. It will be consolidated and shared with management to decide which platforms the company should purchase or support.</p>
+  </div>
+</div>
+
+<datalist id="platformList">
+  <option value="ChatGPT (OpenAI)"><option value="Google Gemini"><option value="Claude (Anthropic)"><option value="Microsoft Copilot">
+  <option value="Perplexity"><option value="Meta AI"><option value="DeepSeek"><option value="Grok"><option value="Canva">
+  <option value="Gamma"><option value="Grammarly"><option value="Notion AI"><option value="Otter / Fireflies">
+  <option value="Midjourney"><option value="HeyGen / Synthesia"><option value="ElevenLabs"><option value="LinkedIn Premium / Sales Navigator">
+  <option value="Zoom / Google Meet paid plan">
+</datalist>
+
+<script>
+  // Apps Script web app that saves each response to the "Web Form Responses" sheet tab.
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbw338BBQo6z_Aw5F-e333qGOqiP5N6fOYOsYVgx3ctZCeLli9qLxVlaqkwiJX84yPQB/exec';
+
+  function platformBlock(n) {
+    var p = 'p' + n + '_';
+    var notUsing = n === 1 ? '<label><input type="radio" name="' + p + 'status" value="Not using any AI tool">Not using any AI tool</label>' : '';
+    var req = n === 1 ? ' <span class="req">*</span>' : '';
+    return '' +
+      '<div class="card sec' + (n > 1 ? ' collapsible closed' : '') + '" id="plat' + n + '">' +
+        '<div class="bar">Platform ' + n + (n > 1 ? '<small>+ tap to add another platform</small>' : '') + '</div>' +
+        '<div class="body">' +
+          '<div class="q" data-pname><label class="t">Platform Name (e.g., ChatGPT, Gemini, Claude, Canva, etc.)' + req + '</label>' +
+            '<input type="text" name="' + p + 'name" list="platformList" placeholder="Enter platform name"><div class="err">Please enter the platform name</div></div>' +
+          '<div class="q" data-pstatus><label class="t">Subscription Status' + req + '</label><div class="opts">' +
+            '<label><input type="radio" name="' + p + 'status" value="Paid (Self)">Paid (Self)</label>' +
+            '<label><input type="radio" name="' + p + 'status" value="Paid (Company)">Paid (Company)</label>' +
+            '<label><input type="radio" name="' + p + 'status" value="Free Trial">Free Trial</label>' +
+            '<label><input type="radio" name="' + p + 'status" value="Demo">Demo</label>' +
+            '<label><input type="radio" name="' + p + 'status" value="Free Plan">Free Plan</label>' + notUsing +
+          '</div><div class="err">Please choose the subscription status</div></div>' +
+          '<div class="pdetail">' +
+            '<div class="q two">' +
+              '<div><label class="t">Plan name</label><input type="text" name="' + p + 'plan" placeholder="e.g. ChatGPT Plus, Claude Pro"></div>' +
+              '<div><label class="t">Cost per month (₹)</label><input type="number" min="0" name="' + p + 'cost" placeholder="0 if free / trial"></div>' +
+            '</div>' +
+            '<div class="q"><label class="t">Subscription Period</label><div class="two">' +
+              '<div class="date"><span>Date of Purchase (optional)</span><input type="date" name="' + p + 'start"></div>' +
+              '<div class="date"><span>Expiry Date (optional)</span><input type="date" name="' + p + 'expiry"></div>' +
+            '</div></div>' +
+            '<div class="q"><label class="t">How often do you use it?</label><div class="opts">' +
+              '<label><input type="radio" name="' + p + 'freq" value="Daily">Daily</label>' +
+              '<label><input type="radio" name="' + p + 'freq" value="A few times a week">A few times a week</label>' +
+              '<label><input type="radio" name="' + p + 'freq" value="Weekly">Weekly</label>' +
+              '<label><input type="radio" name="' + p + 'freq" value="Occasionally">Occasionally</label>' +
+            '</div></div>' +
+            '<div class="q" data-puseful><label class="t">How useful is this platform for your work?' + req + '</label><div class="scale">' +
+              '<label><input type="radio" name="' + p + 'useful" value="1">1 (Not useful)</label>' +
+              '<label><input type="radio" name="' + p + 'useful" value="2">2 (Slightly)</label>' +
+              '<label><input type="radio" name="' + p + 'useful" value="3">3 (Average)</label>' +
+              '<label><input type="radio" name="' + p + 'useful" value="4">4 (Very useful)</label>' +
+              '<label><input type="radio" name="' + p + 'useful" value="5">5 (Extremely useful)</label>' +
+            '</div><div class="err">Please rate the usefulness</div></div>' +
+            '<div class="q"><label class="t">What do you mainly use it for?</label><input type="text" name="' + p + 'use" placeholder="e.g. emails, content, reports, presentations"></div>' +
+            '<div class="q" data-phelp><label class="t">Would you want the company to help purchase or renew this platform?' + req + '</label><div class="opts">' +
+              '<label><input type="radio" name="' + p + 'help" value="Yes">Yes</label>' +
+              '<label><input type="radio" name="' + p + 'help" value="No">No</label>' +
+              '<label><input type="radio" name="' + p + 'help" value="Maybe">Maybe</label>' +
+            '</div><div class="err">Please choose one</div></div>' +
+            '<div class="q"><label class="t">Your recommendation</label><div class="opts">' +
+              '<label><input type="radio" name="' + p + 'rec" value="Strongly recommend for the company">Strongly recommend for the company</label>' +
+              '<label><input type="radio" name="' + p + 'rec" value="Recommend for my team / role only">For my team / role only</label>' +
+              '<label><input type="radio" name="' + p + 'rec" value="Neutral">Neutral</label>' +
+              '<label><input type="radio" name="' + p + 'rec" value="Do not recommend">Do not recommend</label>' +
+            '</div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  var host = document.getElementById('platforms');
+  host.innerHTML = platformBlock(1) + platformBlock(2) + platformBlock(3);
+  var f = document.getElementById('f');
+
+  [2, 3].forEach(function (n) {
+    var sec = document.getElementById('plat' + n);
+    sec.querySelector('.bar').addEventListener('click', function () { sec.classList.toggle('closed'); });
+  });
+
+  function val(name) { var el = f.elements[name]; if (!el) return ''; if (el.length !== undefined && !el.tagName) { for (var i = 0; i < el.length; i++) if (el[i].checked) return el[i].value; return ''; } return (el.value || '').trim(); }
+  function vals(name) { return Array.prototype.slice.call(f.querySelectorAll('input[name="' + name + '"]:checked')).map(function (x) { return x.value; }); }
+
+  function refresh() {
+    var p1NotUsing = val('p1_status') === 'Not using any AI tool';
+    var never = document.getElementById('neverUsed').checked;
+    document.querySelector('#plat1 .pdetail').classList.toggle('hide', p1NotUsing);
+    document.getElementById('plat2').classList.toggle('hide', p1NotUsing);
+    document.getElementById('plat3').classList.toggle('hide', p1NotUsing);
+    document.getElementById('notUsing').classList.toggle('hide', !(p1NotUsing || never));
+  }
+  f.addEventListener('change', function (e) {
+    if (e.target.id === 'neverUsed' && e.target.checked) {
+      f.querySelectorAll('input[name="everUsed"]').forEach(function (x) { if (x.id !== 'neverUsed') x.checked = false; });
+    } else if (e.target.name === 'everUsed' && e.target.checked) {
+      document.getElementById('neverUsed').checked = false;
+    }
+    var q = e.target.closest('.q'); if (q) q.classList.remove('bad');
+    refresh();
+  });
+  f.addEventListener('input', function (e) { var q = e.target.closest('.q'); if (q) q.classList.remove('bad'); });
+
+  function validate() {
+    var bad = [];
+    f.querySelectorAll('[data-req]').forEach(function (q) {
+      var el = q.querySelector('input,select'); var v = (el.value || '').trim();
+      var ok = v !== '' && (!q.hasAttribute('data-email') || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v));
+      q.classList.toggle('bad', !ok); if (!ok) bad.push(q);
+    });
+    f.querySelectorAll('[data-req-group]').forEach(function (q) {
+      if (q.closest('.hide')) { q.classList.remove('bad'); return; }
+      var ok = vals(q.getAttribute('data-req-group')).length > 0;
+      q.classList.toggle('bad', !ok); if (!ok) bad.push(q);
+    });
+    [1, 2, 3].forEach(function (n) {
+      var sec = document.getElementById('plat' + n); if (sec.classList.contains('hide')) return;
+      var p = 'p' + n + '_', status = val(p + 'status'), name = val(p + 'name');
+      var filled = n === 1 || name || status;
+      var notUsing = status === 'Not using any AI tool';
+      function mark(sel, ok) { var q = sec.querySelector(sel); q.classList.toggle('bad', !ok); if (!ok) { bad.push(q); sec.classList.remove('closed'); } }
+      mark('[data-pstatus]', !filled || !!status);
+      mark('[data-pname]', !filled || notUsing || !!name);
+      mark('[data-puseful]', !filled || notUsing || !!val(p + 'useful'));
+      mark('[data-phelp]', !filled || notUsing || !!val(p + 'help'));
+    });
+    return bad;
+  }
+
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var bad = validate();
+    if (bad.length) { bad[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    var data = {};
+    ['name','empId','email','department','designation','branch','manager','aiFreq','training','topPick','why','comments'].forEach(function (k) { data[k] = val(k); });
+    ['everUsed','notReasons','learnTools'].forEach(function (k) { data[k] = vals(k); });
+    [1, 2, 3].forEach(function (n) {
+      var p = 'p' + n + '_';
+      if (document.getElementById('plat' + n).classList.contains('hide')) return;
+      ['name','status','plan','cost','start','expiry','freq','useful','use','help','rec'].forEach(function (k) { data[p + k] = val(p + k); });
+    });
+    if (document.getElementById('notUsing').classList.contains('hide')) { data.notReasons = []; data.training = ''; data.learnTools = []; }
+    var sb = document.getElementById('sb'); sb.disabled = true; sb.textContent = 'Submitting…';
+    // Plain-text POST keeps this a "simple" request, so Apps Script accepts it from GitHub Pages without a CORS preflight.
+    fetch(ENDPOINT, { method: 'POST', body: JSON.stringify(data) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok) throw new Error(res && res.error ? res.error : 'Save failed');
+        document.getElementById('formView').classList.add('hide');
+        document.getElementById('doneView').classList.remove('hide');
+        window.scrollTo(0, 0);
+      })
+      .catch(function (err) {
+        sb.disabled = false; sb.textContent = 'Submit';
+        alert('Sorry, your response could not be saved. Please check your internet and try again.\n\n' + (err && err.message ? err.message : err));
+      });
+  });
+  refresh();
+</script>
+</body>
+</html>
